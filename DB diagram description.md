@@ -1,4 +1,5 @@
-![DB](https://github.com/Elizabeth379/DBLabs/blob/main/db.jpg)
+![image](https://github.com/Elizabeth379/DBLabs/assets/93152483/21b19b62-e22a-4984-be74-a64b3c3dc6c5)
+
 
 Description
 
