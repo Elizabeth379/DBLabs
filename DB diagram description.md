@@ -1,4 +1,4 @@
-![image](https://github.com/Elizabeth379/DBLabs/assets/93152483/d412f266-fb9a-4993-84ea-a8a2d24c8a8f)
+![image](https://github.com/Elizabeth379/DBLabs/assets/93152483/24031b58-8516-4209-b1a3-407eb73fe7c4)
   
 Description
 Все атрибуты в обязательном порядке содержат поле id.  
