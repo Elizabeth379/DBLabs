@@ -7,6 +7,12 @@ DROP TABLE IF EXISTS profile;
 DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS place;
 DROP TABLE IF EXISTS rewiew;
+DROP TABLE IF EXISTS food;
+DROP TABLE IF EXISTS food_order;
+DROP TABLE IF EXISTS ticket_type;
+DROP TABLE IF EXISTS ticket;
+DROP TABLE IF EXISTS activity_type;
+DROP TABLE IF EXISTS activity;
 
 CREATE TABLE species
 (
@@ -92,4 +98,19 @@ CREATE TABLE ticket
 (
 	ticket_id smallint PRIMARY KEY,
 	price smallint NOT NULL
+);
+
+CREATE TABLE activity_type
+(
+	activity_type_id smallint PRIMARY KEY,
+    name varchar(32) NOT NULL
+
+);
+
+CREATE TABLE activity
+(
+    activity_id integer PRIMARY KEY,
+    title varchar(32) NOT NULL,
+    description text,
+    action_time timestamp NOT NULL
 );
