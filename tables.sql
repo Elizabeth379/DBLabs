@@ -5,7 +5,9 @@ DROP TABLE IF EXISTS aviary_type;
 DROP TABLE IF EXISTS aviary_size;
 DROP TABLE IF EXISTS profile;
 DROP TABLE IF EXISTS client;
+DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS place;
+DROP TABLE IF EXISTS "role";
 DROP TABLE IF EXISTS rewiew;
 DROP TABLE IF EXISTS food;
 DROP TABLE IF EXISTS food_order;
@@ -13,6 +15,8 @@ DROP TABLE IF EXISTS ticket_type;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS activity_type;
 DROP TABLE IF EXISTS activity;
+DROP TABLE IF EXISTS action_type;
+DROP TABLE IF EXISTS "action";
 
 CREATE TABLE species
 (
@@ -56,16 +60,16 @@ CREATE TABLE profile
     last_name varchar(64) NOT NULL
 );
 
-CREATE TABLE client
+CREATE TABLE "user"
 (
-	client_id smallint PRIMARY KEY,
+	user_id smallint PRIMARY KEY,
 	username varchar(64) NOT NULL,
     password varchar(32) NOT NULL UNIQUE
 );
 
-CREATE TABLE place
+CREATE TABLE "role"
 (
-	place_id smallint PRIMARY KEY,
+	role_id smallint PRIMARY KEY,
 	name varchar(64) NOT NULL
 );
 
@@ -100,16 +104,16 @@ CREATE TABLE ticket
 	price smallint NOT NULL
 );
 
-CREATE TABLE activity_type
+CREATE TABLE action_type
 (
-	activity_type_id smallint PRIMARY KEY,
+	action_type_id smallint PRIMARY KEY,
     name varchar(32) NOT NULL
 
 );
 
-CREATE TABLE activity
+CREATE TABLE "action"
 (
-    activity_id integer PRIMARY KEY,
+    action_id integer PRIMARY KEY,
     title varchar(32) NOT NULL,
     description text,
     action_time timestamp NOT NULL
