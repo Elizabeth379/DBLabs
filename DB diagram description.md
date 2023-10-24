@@ -1,4 +1,4 @@
-![image](https://github.com/Elizabeth379/DBLabs/assets/93152483/3faf3728-8aaa-4a7c-8e83-ba52ed0416d8)
+![image](https://github.com/Elizabeth379/DBLabs/assets/93152483/001176cf-4529-4dfb-96dd-a22fbde1d21f)
   
 Description
 Все атрибуты в обязательном порядке содержат поле id.  
@@ -18,7 +18,7 @@ Animal
 4. description - описание животного (повадки, ареал обитания и т д)    
 Связи:  
 ManyToOne c Species  
-OneToOne c Aviary   
+ManyToOne c Aviary   
 ManyToMany c Review  
 ManyToOne c Food  
 
@@ -29,27 +29,27 @@ Aviary
 3. size_id - id размера вольера
 4. aviary_type_id - id типа вольера  
 Связи:    
-OneToOne c Animal   
-OneToOne c Aviary Type  
-OneToOne c Aviary Size   
+OneToMany c Animal   
+ManyToOne c Aviary Type  
+ManyToOne c Aviary Size   
   
 Aviary Size    
 Описывает размер вольера  
 1. name - наименование размера вольера  
 Связи:    
-OneToOne c Aviary  
+OneToMany c Aviary  
 
 Aviary Type  
 Описывает типы вольеров  
 1. name - название типа вольера  
 Связи:    
-OneToOne c Aviary
+OneToMany c Aviary
 
 Role  
 Описывает роль пользователя в системе. Содержит поля:
 1. name - название роли (гость, посетитель, работник, админ)  
 Связи:    
-OneToOne c User
+OneToMany c User
 
 User  
 Описывает общую сущность пользователя. Содержит поля:
@@ -61,11 +61,12 @@ User
 6. last_name - фамилия пользователя
 7. role - должность пользователя, определенная в таблице Role    
 Связи:   
-OneToOne c Role    
+ManyToOne c Role    
 OneToMany c Ticket  
-OneToOne c Action  
+OneToMany c Action  
 OneToMany c Food Order  
-OneToMany c Rewiew  
+OneToMany c Rewiew
+OneToOne c Profile    
   
 Rewiew  
 Описывает отзыв, который можно оставить и просмотреть в системе. Содержит поля:  
@@ -103,14 +104,14 @@ Ticket
 2. price - стоимость билета  
 3. type_id - id типа билета   
 Связи:    
-OneToOne c TicketType  
+ManyToOne c TicketType  
 ManyToOne c User  
   
 Action Type  
 Описывает тип действия, происходящего в системе и регистрирующегося в журнал. Содержит поля:
 1. name - наименование типа действия  
 Связи:    
-OneToOne c Action      
+OneToMany c Action      
      
 Action  
 Описывает действия, происходящие в системе и регистрирующиеся в журнал. Содержит поля:
@@ -119,13 +120,6 @@ Action
 3. user_id - id пользователя, совершившего действие
 4. timestemp - время регистрации действия  
 Связи:    
-OneToOne c ActionType   
-ManyToOne c User  
-ManyToOne c ActionLog   
+ManyToOne c ActionType   
+ManyToOne c User
   
-Action Log    
-Описывает журнал, регистрирующий действия в системе. Содержит поля:  
-1. title - название журнала  
-2. action_id - id действия из модели Action  
-Связи:     
-OneToMany c Action     
