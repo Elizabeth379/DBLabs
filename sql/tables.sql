@@ -117,11 +117,27 @@ CREATE TABLE rewiew
 	CONSTRAINT valid_rewiew_text CHECK (length(rewiew_text)>0)
 );
 
+CREATE TABLE animal_rewiew
+(
+    animal_rewiew_id smallint PRIMARY KEY,
+    fk_animal_id smallint NOT NULL REFERENCES animal,
+    fk_rewiew_id   smallint NOT NULL REFERENCES rewiew,
+    UNIQUE (fk_animal_id, fk_rewiew_id)
+);
+
 CREATE TABLE food
 (
 	name varchar(64) PRIMARY KEY
 	
 	CHECK (length(name) > 0)
+);
+
+CREATE TABLE animal_food
+(
+    animal_rewiew_id smallint PRIMARY KEY,
+    fk_animal_id smallint NOT NULL REFERENCES animal,
+    fk_food_name varchar(64) NOT NULL REFERENCES food,
+    UNIQUE (fk_animal_id, fk_food_name)
 );
 
 CREATE TABLE food_order
