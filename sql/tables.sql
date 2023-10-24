@@ -91,7 +91,7 @@ CREATE TABLE "user"
 CREATE TABLE profile
 (
 	profile_id smallint PRIMARY KEY,
-	phone varchar(10) UNIQUE NOT NULL,
+	phone varchar(13) UNIQUE NOT NULL,
 	email varchar(64) UNIQUE NOT NULL,
     first_name varchar(64) NOT NULL,
     last_name varchar(64) NOT NULL,
