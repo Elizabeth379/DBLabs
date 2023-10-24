@@ -31,13 +31,23 @@ CREATE TABLE aviary_type
 	CONSTRAINT valid_aviary_type_name CHECK (length(name)>0)
 );
 
+CREATE TABLE aviary_size
+(
+	aviary_size_id smallint PRIMARY KEY,
+	name varchar(64) NOT NULL
+	
+	CONSTRAINT valid_aviary_size_name CHECK (length(name)>0)
+);
+
 CREATE TABLE aviary
 (
 	aviary_id smallint PRIMARY KEY,
 	name varchar(64) NOT NULL,
 	fk_aviary_type_id smallint,
+	fk_aviary_size_id smallint,
 	
 	FOREIGN KEY (fk_aviary_type_id) REFERENCES aviary_type(aviary_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (fk_aviary_size_id) REFERENCES aviary_size(aviary_size_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	
 	CONSTRAINT valid_aviary_name CHECK (length(name)>0)
 
@@ -56,14 +66,6 @@ CREATE TABLE animal
 	FOREIGN KEY (fk_aviary_id) REFERENCES aviary(aviary_id) ON DELETE SET DEFAULT ON UPDATE CASCADE,
 	
 	CONSTRAINT valid_animal_name CHECK (length(name)>0)
-);
-
-CREATE TABLE aviary_size
-(
-	aviary_size_id smallint PRIMARY KEY,
-	name varchar(64) NOT NULL
-	
-	CONSTRAINT valid_aviary_size_name CHECK (length(name)>0)
 );
 
 CREATE TABLE "role"
