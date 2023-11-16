@@ -45,3 +45,31 @@ SELECT name FROM species
 INTERSECT
 SELECT fk_species_name FROM animal;
 
+--Подсчет количества пользователей в каждой роли--
+SELECT r.name AS role_name, COUNT(u.user_id) AS user_count
+FROM "role" r
+JOIN "user" u ON r.role_id = u.fk_role_id
+GROUP BY r.name;
+
+--Список ролей с общим количеством пользователей более 3--
+SELECT r.name AS role_name, COUNT(u.user_id) AS user_count
+FROM "role" r
+JOIN "user" u ON r.role_id = u.fk_role_id
+GROUP BY r.name
+HAVING COUNT(u.user_id) > 3;
+
+--Вычисление среднего возраста животных внутри каждого вольера--
+SELECT animal_id, name, age, fk_aviary_id,
+       AVG(age) OVER (PARTITION BY fk_aviary_id) AS avg_age_per_aviary
+FROM animal;
+
+--Вычисление общего количества животных в каждом типе вольера--
+SELECT a.fk_aviary_id, at.name AS aviary_type, COUNT(*) AS animal_count
+FROM animal a
+JOIN aviary av ON a.fk_aviary_id = av.aviary_id
+JOIN aviary_type at ON av.fk_aviary_type_id = at.aviary_type_id
+GROUP BY a.fk_aviary_id, at.name;
+
+--Ранжирование животных в каждом вольере по возрасту--
+SELECT fk_aviary_id, RANK() OVER (PARTITION BY fk_aviary_id ORDER BY age) AS age_rank_per_aviary
+FROM animal;
