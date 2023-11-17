@@ -73,3 +73,9 @@ GROUP BY a.fk_aviary_id, at.name;
 --Ранжирование животных в каждом вольере по возрасту--
 SELECT fk_aviary_id, RANK() OVER (PARTITION BY fk_aviary_id ORDER BY age) AS age_rank_per_aviary
 FROM animal;
+
+SELECT a.name AS animal_name, SUM(fo.price)
+FROM animal_food af
+JOIN food_order fo ON fo.fk_food_name = af.fk_food_name
+INNER JOIN animal a ON af.fk_animal_id = a.animal_id
+GROUP BY animal_name;
