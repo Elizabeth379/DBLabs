@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS animal_rewiew;
+DROP TABLE IF EXISTS animal_food;
 DROP TABLE IF EXISTS animal;
 DROP TABLE IF EXISTS species;
 DROP TABLE IF EXISTS aviary;
@@ -25,7 +27,7 @@ CREATE TABLE species
 
 CREATE TABLE aviary_type
 (
-	aviary_type_id smallint PRIMARY KEY,
+	aviary_type_id serial PRIMARY KEY,
 	name varchar(64) NOT NULL,
 	
 	CONSTRAINT valid_aviary_type_name CHECK (length(name)>0)
@@ -33,7 +35,7 @@ CREATE TABLE aviary_type
 
 CREATE TABLE aviary_size
 (
-	aviary_size_id smallint PRIMARY KEY,
+	aviary_size_id serial PRIMARY KEY,
 	name varchar(64) NOT NULL
 	
 	CONSTRAINT valid_aviary_size_name CHECK (length(name)>0)
@@ -41,7 +43,7 @@ CREATE TABLE aviary_size
 
 CREATE TABLE aviary
 (
-	aviary_id smallint PRIMARY KEY,
+	aviary_id serial PRIMARY KEY,
 	name varchar(64) NOT NULL,
 	fk_aviary_type_id smallint,
 	fk_aviary_size_id smallint,
@@ -55,7 +57,7 @@ CREATE TABLE aviary
 
 CREATE TABLE animal
 (
-	animal_id smallint PRIMARY KEY,
+	animal_id serial PRIMARY KEY,
 	name varchar(64) NOT NULL,
 	age smallint,
 	description text,
@@ -70,7 +72,7 @@ CREATE TABLE animal
 
 CREATE TABLE "role"
 (
-	role_id smallint PRIMARY KEY,
+	role_id serial PRIMARY KEY,
 	name varchar(64) NOT NULL,
 	
 	CONSTRAINT valid_role_name CHECK ( name in ('superuser', 'staff', 'common') )
@@ -78,7 +80,7 @@ CREATE TABLE "role"
 
 CREATE TABLE "user"
 (
-	user_id smallint PRIMARY KEY,
+	user_id serial PRIMARY KEY,
 	username varchar(64) NOT NULL,
     password varchar(32) NOT NULL UNIQUE,
 	fk_role_id smallint,
@@ -90,7 +92,7 @@ CREATE TABLE "user"
 
 CREATE TABLE profile
 (
-	profile_id smallint PRIMARY KEY,
+	profile_id serial PRIMARY KEY,
 	phone varchar(13) UNIQUE NOT NULL,
 	email varchar(64) UNIQUE NOT NULL,
     first_name varchar(64) NOT NULL,
@@ -107,7 +109,7 @@ CREATE TABLE profile
 
 CREATE TABLE rewiew
 (
-	rewiew_id smallint PRIMARY KEY,
+	rewiew_id serial PRIMARY KEY,
 	rewiew_text text NOT NULL,
 	rewiew_time timestamp NOT NULL,
 	fk_user_id smallint NOT NULL DEFAULT 0,
@@ -142,7 +144,7 @@ CREATE TABLE animal_food
 
 CREATE TABLE food_order
 (
-	food_order_id smallint PRIMARY KEY,
+	food_order_id serial PRIMARY KEY,
 	price smallint NOT NULL,
 	fk_food_name varchar(64) NOT NULL,
 	fk_user_id smallint NOT NULL,
@@ -156,7 +158,7 @@ CREATE TABLE food_order
 
 CREATE TABLE ticket_type
 (
-	ticket_type_id smallint PRIMARY KEY,
+	ticket_type_id serial PRIMARY KEY,
 	name varchar(64) NOT NULL,
 	
 	CHECK (length(name) > 0)
@@ -164,7 +166,7 @@ CREATE TABLE ticket_type
 
 CREATE TABLE ticket
 (
-	ticket_id smallint PRIMARY KEY,
+	ticket_id serial PRIMARY KEY,
 	price smallint NOT NULL,
 	fk_ticket_type_id smallint,
 	fk_user_id smallint NOT NULL,
@@ -185,7 +187,7 @@ CREATE TABLE action_type
 
 CREATE TABLE "action"
 (
-    action_id integer PRIMARY KEY,
+    action_id serial PRIMARY KEY,
     action_time timestamp NOT NULL,
 	fk_action_type_name varchar(32) NOT NULL,
 	fk_user_id smallint NOT NULL,
