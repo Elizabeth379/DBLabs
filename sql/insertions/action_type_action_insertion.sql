@@ -1,10 +1,15 @@
 -- Вставка данных в таблицу action_type
 INSERT INTO action_type (name) VALUES
-('ticket'),
-('food_order'),
-('rewiew'),
-('update'),
-('delete');
+('ticket_insert'),
+('ticket_delete'),
+('food_order_insert'),
+('food_order_delete'),
+('rewiew_insert'),
+('rewiew_update'),
+('rewiew_delete'),
+('user_update'),
+('user_delete'),
+('user_insert');
 
 -- Вставка данных в таблицу action
 INSERT INTO "action" ( action_time, fk_action_type_name, fk_user_id) VALUES

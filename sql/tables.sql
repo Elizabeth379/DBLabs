@@ -182,7 +182,7 @@ CREATE TABLE action_type
 (
     name varchar(32) PRIMARY KEY,
 	
-	CONSTRAINT valid_name CHECK ( name in ('ticket', 'food_order', 'rewiew', 'update', 'delete') )
+	CONSTRAINT valid_name CHECK ( name in ('ticket_insert', 'ticket_delete', 'food_order_insert', 'food_order_delete', 'rewiew_insert', 'rewiew_update', 'rewiew_delete', 'user_update', 'user_delete', 'user_insert') )
 );
 
 CREATE TABLE "action"
