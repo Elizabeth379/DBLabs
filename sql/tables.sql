@@ -70,6 +70,9 @@ CREATE TABLE animal
 	CONSTRAINT valid_animal_name CHECK (length(name)>0)
 );
 
+ ALTER TABLE animal
+ADD popularity smallint DEFAULT 0;
+
 CREATE TABLE "role"
 (
 	role_id serial PRIMARY KEY,
@@ -106,6 +109,18 @@ CREATE TABLE profile
  	CONSTRAINT valid_user_profile CHECK (length(first_name) > 0 AND length(last_name)>0)
  	
 );
+
+ALTER TABLE profile
+DROP CONSTRAINT IF EXISTS profile_phone_key,
+DROP CONSTRAINT IF EXISTS profile_email_key,
+ALTER COLUMN phone DROP NOT NULL,
+ALTER COLUMN email DROP NOT NULL,
+ALTER COLUMN first_name DROP NOT NULL,
+ALTER COLUMN last_name DROP NOT NULL,
+ALTER COLUMN phone SET DEFAULT '+0000000000',
+ALTER COLUMN email SET DEFAULT 'default@def.com',
+ALTER COLUMN first_name SET DEFAULT 'noname',
+ALTER COLUMN last_name SET DEFAULT 'nolastname';
 
 CREATE TABLE rewiew
 (

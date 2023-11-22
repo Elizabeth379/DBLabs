@@ -91,3 +91,17 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "user"
 FOR EACH ROW
 EXECUTE FUNCTION log_action_user();
+
+-- При создании пользователя создается профиль
+CREATE OR REPLACE FUNCTION create_user_profile()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO profile (fk_user_id) VALUES (NEW.user_id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER create_profile
+AFTER INSERT ON "user"
+FOR EACH ROW
+EXECUTE FUNCTION create_user_profile();
