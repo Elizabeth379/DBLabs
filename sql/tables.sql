@@ -70,8 +70,6 @@ CREATE TABLE animal
 	CONSTRAINT valid_animal_name CHECK (length(name)>0)
 );
 
- ALTER TABLE animal
-ADD popularity smallint DEFAULT 0;
 
 CREATE TABLE "role"
 (
@@ -149,6 +147,9 @@ CREATE TABLE food
 	CHECK (length(name) > 0)
 );
 
+ALTER TABLE food
+ADD weight integer;
+
 CREATE TABLE animal_food
 (
     animal_rewiew_id smallint PRIMARY KEY,
@@ -170,6 +171,9 @@ CREATE TABLE food_order
 	CHECK (price >= 0),
 	CHECK (length(fk_food_name) > 0)
 );
+
+ALTER TABLE food_order
+ADD is_paid boolean DEFAULT true;
 
 CREATE TABLE ticket_type
 (
