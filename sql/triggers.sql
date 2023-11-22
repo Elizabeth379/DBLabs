@@ -121,7 +121,7 @@ $$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER trigger_update_order_price
-AFTER UPDATE
+AFTER UPDATE OF weight
 ON food
 FOR EACH ROW
 EXECUTE function update_order_price();
