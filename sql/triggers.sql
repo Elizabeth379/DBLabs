@@ -105,3 +105,23 @@ CREATE OR REPLACE TRIGGER create_profile
 AFTER INSERT ON "user"
 FOR EACH ROW
 EXECUTE FUNCTION create_user_profile();
+
+--Обновление цены заказа в зависимости от обновления веса еды
+CREATE OR REPLACE FUNCTION update_order_price()
+RETURNS TRIGGER AS
+$$
+	BEGIN
+		UPDATE food_order
+		SET price = NEW.weight / 100 * price
+		WHERE is_paid = false AND fk_food_name = NEW.name;
+		
+		RETURN NEW;
+	END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER trigger_update_order_price
+AFTER UPDATE
+ON food
+FOR EACH ROW
+EXECUTE function update_order_price();
