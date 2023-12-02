@@ -139,6 +139,48 @@ def edit_profile(user_id):
             print(f"Error: Unable to edit profile\n{e}")
 
 
+def view_animals(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM animal")
+            animals = cursor.fetchall()
+
+            query = """
+                    SELECT a.animal_id, a.fk_aviary_id, av.name
+                    FROM animal a
+                    JOIN aviary av ON a.fk_aviary_id = av.aviary_id;
+                    """
+            if animals:
+                print("Animals:")
+                for animal in animals:
+                    print(f"ID: {animal[0]}, Name: {animal[1]}, Age: {animal[2]}, Description: {animal[3]}, Species: {animal[4]}, Aviary: {animal[5]}")
+
+                animal_id = input("Enter the ID of the animal to view what food it prefer (0 to go back): ")
+
+                if animal_id != '0':
+                    view_animal_food(user_id, animal_id)
+            else:
+                print("No collections found.")
+    except Exception as e:
+        print(f"Error: Unable to view collections\n{e}")
+
+
+def view_animal_food(user_id, animal_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT fk_food_name FROM animal_food WHERE fk_animal_id = %s::integer', (animal_id,))
+            food = cursor.fetchall()
+
+            if food:
+                print("Food for this animal:")
+                for f in food:
+                    print(f"{f[0]}")
+            else:
+                print("No food found.")
+    except Exception as e:
+        print(f"Error viewind food for animal: {e}")
+
+
 def main():
     user_info = None
     user_role = None
@@ -148,7 +190,7 @@ def main():
         print("Welcome to the zoo!")
         print("Our adress: 221B Baker Street.")
         print("Working hours: 10:00am - 9:00pm")
-        print("============================================\n")
+        print("============================================")
         print("\nMenu:")
 
         if user_info:
@@ -185,7 +227,7 @@ def main():
             menu_options_common = {
                 '3': view_profile,
                 '4': edit_profile,
-                #'5': view_animals,
+                '5': view_animals,
                 #'6': view_rewiews,
                 #'7': order_food,
                 #'8': view_food_orders,
