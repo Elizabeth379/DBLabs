@@ -1,4 +1,6 @@
 import psycopg2
+from datetime import datetime
+
 
 try:
     connection = psycopg2.connect(
@@ -160,7 +162,7 @@ def view_animals(user_id):
                 if animal_id != '0':
                     view_animal_food(user_id, animal_id)
             else:
-                print("No collections found.")
+                print("No animals found.")
     except Exception as e:
         print(f"Error: Unable to view collections\n{e}")
 
@@ -178,7 +180,59 @@ def view_animal_food(user_id, animal_id):
             else:
                 print("No food found.")
     except Exception as e:
-        print(f"Error viewind food for animal: {e}")
+        print(f"Error viewing food for animal: {e}")
+
+def view_rewiews(user_id):
+    try:
+        query = """
+               SELECT r.rewiew_id, r.rewiew_text, r.rewiew_time, r.fk_user_id, u.username
+               FROM rewiew r
+               JOIN "user" u ON r.fk_user_id = u.user_id;
+               """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            rewiews = cursor.fetchall()
+
+            if rewiews:
+                print("Rewiews:")
+                for rewiew in rewiews:
+                    print(f"ID: {rewiew[0]}, Text: {rewiew[1]}, Date and time: {rewiew[2]}, User: {rewiew[4]}")
+
+                acception = input("Enter 1 to write new rewiew (0 to go back): ")
+
+                if acception == '1':
+                    add_rewiew(user_id)
+            else:
+                print("No rewiews found.")
+    except Exception as e:
+        print(f"Error: Unable to view rewiews\n{e}")
+
+
+def add_rewiew(user_id):
+    while True:
+        text = input("Enter rewiew text: ")
+        current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO rewiew (rewiew_text, rewiew_time, fk_user_id) VALUES (%s, %s, %s)",
+                               (text, current_datetime, user_id))
+                connection.commit()
+                print("Rewiew added succesfully!")
+
+                choice = input("Enter 1 to go back to rewiew list or 0 to go back to zoo menu: ")
+
+                if choice == '1':
+                    view_rewiews(user_id)
+                    return
+                elif choice == '0':
+                    print("Returning to the main menu.")
+                    return
+                else:
+                    print("Invalid choice. Please try again.")
+        except Exception as e:
+            print(f"Error: Unable to add rewiew\n{e}")
+            return None
 
 
 def main():
@@ -228,7 +282,7 @@ def main():
                 '3': view_profile,
                 '4': edit_profile,
                 '5': view_animals,
-                #'6': view_rewiews,
+                '6': view_rewiews,
                 #'7': order_food,
                 #'8': view_food_orders,
                 #'9': buy_ticket
