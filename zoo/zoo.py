@@ -141,19 +141,19 @@ def edit_profile(user_id):
 
 def view_animals(user_id):
     try:
+        query = """
+                SELECT a.animal_id, a.name, a.age, a.description, a.fk_species_name,  a.fk_aviary_id, av.name
+                FROM animal a
+                JOIN aviary av ON a.fk_aviary_id = av.aviary_id;
+                """
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM animal")
+            cursor.execute(query)
             animals = cursor.fetchall()
 
-            query = """
-                    SELECT a.animal_id, a.fk_aviary_id, av.name
-                    FROM animal a
-                    JOIN aviary av ON a.fk_aviary_id = av.aviary_id;
-                    """
             if animals:
                 print("Animals:")
                 for animal in animals:
-                    print(f"ID: {animal[0]}, Name: {animal[1]}, Age: {animal[2]}, Description: {animal[3]}, Species: {animal[4]}, Aviary: {animal[5]}")
+                    print(f"ID: {animal[0]}, Name: {animal[1]}, Age: {animal[2]}, Description: {animal[3]}, Species: {animal[4]}, Aviary: {animal[6]}")
 
                 animal_id = input("Enter the ID of the animal to view what food it prefer (0 to go back): ")
 
