@@ -10,6 +10,22 @@ try:
 except:
     print('Can`t establish connection to database')
 
+def register_user():
+    print("Registration:")
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('INSERT INTO "user" (username, password, fk_role_id) VALUES (%s, %s, %s) RETURNING user_id',
+                           (username, password, 3))
+            user_id = cursor.fetchone()[0]
+            connection.commit()
+            print(f"Registration successful! Your user ID is {user_id}.")
+            return user_id, username
+    except Exception as e:
+        print(f"Error: Unable to register user\n{e}")
+        return None
 
 def main():
     user_info = None
