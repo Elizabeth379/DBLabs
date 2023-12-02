@@ -75,11 +75,80 @@ def check_role(user_id):
         return 3
 
 
+def view_profile(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM profile WHERE fk_user_id = %s", (user_id,))
+            profile = cursor.fetchone()
+
+            if profile:
+                print("Profile:")
+                print(f"First name: {profile[3]}")
+                print(f"Last name: {profile[4]}")
+                print(f"Email: {profile[2]}")
+                print(f"Phone number: {profile[1]}")
+            else:
+                print("Profile not found.")
+
+        connection.commit()
+    except Exception as e:
+        print(f"Error: Unable to view profile\n{e}")
+
+    connection.commit()
+
+def edit_profile(user_id):
+    while True:
+        print("Edit Profile:")
+        print("1. Change name")
+        print("2. Change last name")
+        print("3. Change email")
+        print("4. Change phone number")
+        print("0. Back")
+
+        choice = input("Enter your choice: ")
+
+        try:
+            with connection.cursor() as cursor:
+                if choice == '1':
+                    new_name = input("Enter your new name: ")
+                    cursor.execute("UPDATE profile SET first_name = %s WHERE fk_user_id = %s", (new_name, user_id))
+                    connection.commit()
+                    print("Name updated successfully.")
+                elif choice == '2':
+                    new_last_name = input("Enter your new last name: ")
+                    cursor.execute("UPDATE profile SET last_name = %s WHERE fk_user_id = %s", (new_last_name, user_id))
+                    connection.commit()
+                    print("Last name updated successfully.")
+                elif choice == '3':
+                    new_email = input("Enter your new email: ")
+                    cursor.execute("UPDATE profile SET email = %s WHERE fk_user_id = %s", (new_email, user_id))
+                    connection.commit()
+                    print("Email updated successfully.")
+                elif choice == '4':
+                    new_phone_number = input("Enter your new phone number: ")
+                    cursor.execute("UPDATE profile SET phone = %s WHERE fk_user_id = %s",
+                                   (new_phone_number, user_id))
+                    connection.commit()
+                    print("Phone number updated successfully.")
+                elif choice == '0':
+                    print("Returning to the main menu.")
+                    return
+                else:
+                    print("Invalid choice. Please try again.")
+        except Exception as e:
+            print(f"Error: Unable to edit profile\n{e}")
+
+
 def main():
     user_info = None
     user_role = None
 
     while True:
+        print("\n============================================")
+        print("Welcome to the zoo!")
+        print("Our adress: 221B Baker Street.")
+        print("Working hours: 10:00am - 9:00pm")
+        print("============================================\n")
         print("\nMenu:")
 
         if user_info:
@@ -116,11 +185,11 @@ def main():
             menu_options_common = {
                 '3': view_profile,
                 '4': edit_profile,
-                '5': view_animals,
-                '6': view_rewiews,
-                '7': order_food,
-                '8': view_food_orders,
-                '9': buy_ticket
+                #'5': view_animals,
+                #'6': view_rewiews,
+                #'7': order_food,
+                #'8': view_food_orders,
+                #'9': buy_ticket
             }
             menu_options_common[choice](user_info[0])
 
