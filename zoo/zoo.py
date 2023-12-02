@@ -27,6 +27,54 @@ def register_user():
         print(f"Error: Unable to register user\n{e}")
         return None
 
+def login_user():
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT user_id, fk_role_id FROM "user" WHERE username = %s AND password = %s', (username, password))
+            user = cursor.fetchone()
+
+            query = """
+                SELECT u.user_id, u.fk_role_id, r.name
+                FROM "user" u
+                JOIN role r ON u.fk_role_id = r.role_id
+                WHERE u.username = %s;
+                """
+            with connection.cursor() as cursor:
+                cursor.execute(query, (username,))
+                user = cursor.fetchone()
+
+            if user:
+                print(f"Login successful! Your role is {user[2]}.")
+                return user[0], username
+            else:
+                print("Login failed. Invalid username or password.")
+                return None
+
+    except Exception as e:
+        print(f"Error: Unable to log in\n{e}")
+
+    return None
+
+def check_role(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT fk_role_id FROM "user" WHERE user_id = %s::integer', (user_id,))
+            result = cursor.fetchone()
+
+            if result and result[0] == 1:
+                return 1
+            elif result and result[0] == 2:
+                return 2
+            else:
+                return 3
+    except Exception as e:
+        print(f"Error checking user role: {e}")
+        return 3
+
+
 def main():
     user_info = None
     user_role = None
