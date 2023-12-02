@@ -235,6 +235,69 @@ def add_rewiew(user_id):
             return None
 
 
+def order_food(user_id):
+    food_entered = input("Enter food name: ")
+    pay_choice = input("Do you want to pay? (yes/no) ")
+
+    while True:
+        if pay_choice == 'yes':
+            is_paid = True
+            break
+        elif pay_choice == 'no':
+            is_paid = False
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT weight FROM food WHERE name = %s', (food_entered,))
+            food_weight = cursor.fetchone()
+
+            food_price = int(food_weight[0])/10
+
+            if food_price:
+                try:
+                    with connection.cursor() as cursor:
+                        cursor.execute("INSERT INTO food_order (price, fk_food_name, fk_user_id, is_paid) VALUES (%s, %s, %s, %s)",
+                                       (food_price, food_entered, user_id, is_paid))
+                        connection.commit()
+                        print("Food order succesfully!")
+
+                        choice = input("Enter 1 to go back to food order list or 0 to go back to zoo menu: ")
+
+                        if choice == '1':
+                            view_food_orders(user_id)
+                            return
+                        elif choice == '0':
+                            print("Returning to the main menu.")
+                            return
+                        else:
+                            print("Invalid choice. Please try again.")
+                except Exception as e:
+                    print(f"Error: Unable to add food order\n{e}")
+                    return None
+            else:
+                print("No weight for food found.")
+    except Exception as e:
+        print(f"Error get food for animal weight: {e}")
+
+
+def view_food_orders(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM food_order WHERE fk_user_id = %s::integer", (user_id,))
+            food_orders = cursor.fetchall()
+
+            if food_orders:
+                print("Your food orders:")
+                for fo in food_orders:
+                    print(f"ID: {fo[0]}, Price: {fo[1]}, Food name: {fo[2]}, Is Paid: {fo[4]}")
+            else:
+                print("No food orders found.")
+    except Exception as e:
+        print(f"Error: Unable to view food orders\n{e}")
+
 def main():
     user_info = None
     user_role = None
@@ -283,8 +346,8 @@ def main():
                 '4': edit_profile,
                 '5': view_animals,
                 '6': view_rewiews,
-                #'7': order_food,
-                #'8': view_food_orders,
+                '7': order_food,
+                '8': view_food_orders,
                 #'9': buy_ticket
             }
             menu_options_common[choice](user_info[0])
