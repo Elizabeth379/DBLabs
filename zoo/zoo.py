@@ -475,6 +475,79 @@ def edit_species(user_id):
         except Exception as e:
             print(f"Error: Unable to edit species\n{e}")
 
+
+def delete_user_by_id(admin_id):
+    try:
+        user_id_to_delete = int(input("Enter the user ID to delete: "))
+
+        if user_id_to_delete == 1:
+            raise ValueError("Cannot delete the user with ID 1.")
+
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM profile WHERE fk_user_id = %s", (user_id_to_delete,))
+            connection.commit()
+
+            cursor.execute('DELETE FROM "user" WHERE user_id = %s', (user_id_to_delete,))
+            connection.commit()
+
+        print(f"User with ID {user_id_to_delete} deleted successfully.")
+    except ValueError as ve:
+        print(f"Error: {ve}")
+    except Exception as e:
+        print(f"Error deleting user: {e}")
+
+def view_users(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT * FROM "user"')
+            users = cursor.fetchall()
+
+            if users:
+                print("All users:")
+                for user in users:
+                    print(f"ID: {user[0]}, Username: {user[1]}, Role: {user[3]}")
+            else:
+                print("No users found.")
+    except Exception as e:
+        print(f"Error: Unable to view users\n{e}")
+
+def change_user_role(admin_id):
+    try:
+        user_id_to_change = int(input("Enter the user ID to change the role: "))
+        new_role = int(input("Enter the new role (2 for zookeeper): "))
+
+        with connection.cursor() as cursor:
+            if user_id_to_change == admin_id:
+                raise ValueError("Cannot change the role for the admin.")
+
+            update_query = 'UPDATE "user" SET fk_role_id = %s WHERE user_id = %s'
+            cursor.execute(update_query, (new_role, user_id_to_change))
+            print(f"User role updated successfully for user ID {user_id_to_change}.")
+    except ValueError as ve:
+        print(f"Error: {ve}")
+    except Exception as e:
+        print(f"Error changing user role: {e}")
+    connection.commit()
+
+def view_action_table(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT a.action_id, a.action_time, a.fk_user_id, a.fk_action_type_name "
+                           'FROM "action" a ')
+            actions = cursor.fetchall()
+
+            if not actions:
+                print("No actions found.")
+            else:
+                print("\nList of actions:")
+                print("{:<5} {:<30} {:<10} {:<20}".format("ID", "Action Time", "User ID", "Action Type"))
+                for action in actions:
+                    print("{:<5} {:<30} {:<10} {:<20}".format(action[0], str(action[1]), action[2], action[3]))
+
+    except Exception as e:
+        print(f"Error viewing action table: {e}")
+
+
 def main():
     user_info = None
     user_role = None
@@ -505,6 +578,7 @@ def main():
                     print("15. Delete user")
                     print("16. Change user role")
                     print("17. Users history")
+                    print("18. View all users")
             print("0. Logout")
         else:
             print("1. Register")
@@ -547,7 +621,8 @@ def main():
                     menu_options_admin = {
                         '15': delete_user_by_id,
                         '16': change_user_role,
-                        '17': view_action_table
+                        '17': view_action_table,
+                        '18': view_users
                     }
                     if choice in menu_options_admin:
                         menu_options_admin[choice](user_info[0])

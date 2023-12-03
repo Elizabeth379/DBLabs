@@ -132,6 +132,18 @@ CREATE TABLE rewiew
 	CONSTRAINT valid_rewiew_text CHECK (length(rewiew_text)>0)
 );
 
+-- Снятие ограничения NOT NULL с колонки fk_user_id в таблице rewiew
+ALTER TABLE rewiew
+ALTER COLUMN fk_user_id DROP NOT NULL;
+
+-- Установка ON DELETE SET NULL
+ALTER TABLE rewiew
+DROP CONSTRAINT IF EXISTS rewiew_fk_user_id_fkey; -- Удаляем старый внешний ключ
+ALTER TABLE rewiew
+ADD CONSTRAINT rewiew_fk_user_id_fkey
+FOREIGN KEY (fk_user_id) REFERENCES "user"(user_id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+
 CREATE TABLE animal_rewiew
 (
     animal_rewiew_id smallint PRIMARY KEY,
@@ -214,3 +226,6 @@ CREATE TABLE "action"
 	FOREIGN KEY (fk_user_id) REFERENCES "user"(user_id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (fk_action_type_name) REFERENCES action_type(name) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+ALTER TABLE "action"
+ALTER COLUMN fk_user_id DROP NOT NULL;

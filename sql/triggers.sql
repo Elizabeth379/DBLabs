@@ -85,12 +85,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Триггер для таблицы "user"
+-- Триггер для таблицы "user" для INSERT и UPDATE
 CREATE OR REPLACE TRIGGER log_user
-AFTER INSERT OR UPDATE OR DELETE
+AFTER INSERT OR UPDATE
 ON "user"
 FOR EACH ROW
 EXECUTE FUNCTION log_action_user();
+
+-- Функция для таблицы "user" для DELETE
+CREATE OR REPLACE FUNCTION log_action_delete_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP ='DELETE' THEN
+    INSERT INTO "action" (action_id, action_time, fk_action_type_name, fk_user_id)
+    VALUES (DEFAULT, CURRENT_TIMESTAMP, 'user_delete', OLD.user_id);
+  END IF;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Триггер для таблицы "user" для DELETE
+CREATE OR REPLACE TRIGGER log_user_before_delete
+BEFORE DELETE
+ON "user"
+FOR EACH ROW
+EXECUTE FUNCTION log_action_delete_user();
+
 
 -- При создании пользователя создается профиль
 CREATE OR REPLACE FUNCTION create_user_profile()
