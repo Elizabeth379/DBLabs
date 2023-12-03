@@ -401,6 +401,45 @@ def view_all_food_orders(user_id):
     except Exception as e:
         print(f"Error: Unable to view food orders\n{e}")
 
+def edit_animal(user_id):
+    animal_id = input("To edit animal enter its id: ")
+
+    while True:
+        print(f"Edit animal with ID {animal_id}:")
+        print("1. Change name")
+        print("2. Change age")
+        print("3. Change description")
+        print("0. Back")
+
+        choice = input("Enter your choice: ")
+
+        try:
+            with connection.cursor() as cursor:
+                if choice == '1':
+                    new_name = input("Enter new animal name: ")
+                    cursor.execute("UPDATE animal SET name = %s WHERE animal_id = %s", (new_name, animal_id))
+                    connection.commit()
+                    print("Name updated successfully.")
+                elif choice == '2':
+                    new_age = int(input("Enter new age: "))
+                    cursor.execute("UPDATE animal SET age = %s WHERE animal_id = %s",
+                                   (new_age, animal_id))
+                    connection.commit()
+                    print("Age updated successfully.")
+                elif choice == '3':
+                    new_description = input("Enter your new description: ")
+                    cursor.execute("UPDATE animal SET description = %s WHERE animal_id = %s",
+                                   (new_description, animal_id))
+                    connection.commit()
+                    print("Description updated successfully.")
+                elif choice == '0':
+                    print("Returning to the main menu.")
+                    return
+                else:
+                    print("Invalid choice. Please try again.")
+        except Exception as e:
+            print(f"Error: Unable to edit animal\n{e}")
+
 def main():
     user_info = None
     user_role = None
@@ -462,7 +501,7 @@ def main():
         elif user_info and choice in ['11', '12', '13', '14', '15', '16', '17', '18']:
             if user_role in [1, 2]:
                 menu_options_zookeeper = {
-                    #'11': edit_animal,
+                    '11': edit_animal,
                     #'12': edit_aviary,
                     #'13': edit_species,
                     '14': view_all_tickets,
