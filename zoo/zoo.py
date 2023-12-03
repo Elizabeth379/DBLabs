@@ -360,6 +360,47 @@ def view_tickets(user_id):
         print(f"Error: Unable to view tickets\n{e}")
 
 
+def view_all_tickets(user_id):
+    try:
+        query = """
+                SELECT t.ticket_id, t.price, tp.name, u.username, t.fk_user_id, t.fk_ticket_type_id, u.user_id
+                FROM ticket t
+                JOIN ticket_type tp ON t.fk_ticket_type_id = tp.ticket_type_id
+                JOIN "user" u ON t.fk_user_id = u.user_id;
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            tickets = cursor.fetchall()
+
+            if tickets:
+                print("Your tickets:")
+                for ticket in tickets:
+                    print(f"ID: {ticket[0]}, Price: {ticket[1]}, Type: {ticket[2]}, Username: {ticket[3]}")
+            else:
+                print("No tickets found.")
+    except Exception as e:
+        print(f"Error: Unable to view tickets\n{e}")
+
+def view_all_food_orders(user_id):
+    try:
+        query = """
+                SELECT fo.food_order_id, fo.price, fo.fk_food_name, fo.is_paid, u.username, fo.fk_user_id, u.user_id
+                FROM food_order fo
+                JOIN "user" u ON fo.fk_user_id = u.user_id;
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            food_orders = cursor.fetchall()
+
+            if food_orders:
+                print("Your food orders:")
+                for fo in food_orders:
+                    print(f"ID: {fo[0]}, Price: {fo[1]}, Food name: {fo[2]}, Is Paid: {fo[3]}, Username: {fo[4]}")
+            else:
+                print("No food orders found.")
+    except Exception as e:
+        print(f"Error: Unable to view food orders\n{e}")
+
 def main():
     user_info = None
     user_role = None
@@ -385,10 +426,12 @@ def main():
                 print("11. Edit animal")
                 print("12. Edit aviary")
                 print("13. Edit species")
+                print("14. View all tickets")
+                print("15. View all food orders")
                 if user_role == 1:
-                    print("14. Delete user")
-                    print("15. Change user role")
-                    print("16. Users history")
+                    print("16. Delete user")
+                    print("17. Change user role")
+                    print("18. Users history")
             print("0. Logout")
         else:
             print("1. Register")
@@ -416,21 +459,23 @@ def main():
             }
             menu_options_common[choice](user_info[0])
 
-        elif user_info and choice in ['11', '12', '13', '14', '15', '16']:
+        elif user_info and choice in ['11', '12', '13', '14', '15', '16', '17', '18']:
             if user_role in [1, 2]:
                 menu_options_zookeeper = {
-                    '11': edit_animal,
-                    '12': edit_aviary,
-                    '13': edit_species
+                    #'11': edit_animal,
+                    #'12': edit_aviary,
+                    #'13': edit_species,
+                    '14': view_all_tickets,
+                    '15': view_all_food_orders
                 }
                 if choice in menu_options_zookeeper:
                     menu_options_zookeeper[choice](user_info[0])
 
                 if user_role == 1:
                     menu_options_admin = {
-                        '14': delete_user_by_id,
-                        '15': change_user_role,
-                        '16': view_action_table
+                        '16': delete_user_by_id,
+                        '17': change_user_role,
+                        '18': view_action_table
                     }
                     if choice in menu_options_admin:
                         menu_options_admin[choice](user_info[0])
