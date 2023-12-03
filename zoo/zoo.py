@@ -402,7 +402,7 @@ def view_all_food_orders(user_id):
         print(f"Error: Unable to view food orders\n{e}")
 
 def edit_animal(user_id):
-    animal_id = input("To edit animal enter its id: ")
+    animal_id = input("To edit animal enter its ID: ")
 
     while True:
         print(f"Edit animal with ID {animal_id}:")
@@ -440,6 +440,41 @@ def edit_animal(user_id):
         except Exception as e:
             print(f"Error: Unable to edit animal\n{e}")
 
+def edit_species(user_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM species")
+            species = cursor.fetchall()
+
+            if species:
+                print("All species:")
+                for sp in species:
+                    print(f"Name: {sp[0]}, Description: {sp[1]}")
+            else:
+                print("No species found.")
+    except Exception as e:
+        print(f"Error: Unable to view species\n{e}")
+
+
+    while True:
+        species_name = input("To edit species enter its name: ")
+        new_description = input(f"Enter new description to {species_name}: ")
+
+        try:
+            with connection.cursor() as cursor:
+                if new_description:
+                    cursor.execute("UPDATE species SET description = %s WHERE name = %s", (new_description, species_name))
+                    connection.commit()
+                    print("Description updated successfully.")
+                    choice = input("Edit another species? (0 - go back to zoo menu) :")
+                    if choice == '0':
+                        print("Returning to the main menu.")
+                        return
+                else:
+                    print("Invalid choice. Please try again.")
+        except Exception as e:
+            print(f"Error: Unable to edit species\n{e}")
+
 def main():
     user_info = None
     user_role = None
@@ -463,14 +498,13 @@ def main():
             print("10. View tickets")
             if user_role in [1, 2]:
                 print("11. Edit animal")
-                print("12. Edit aviary")
-                print("13. Edit species")
-                print("14. View all tickets")
-                print("15. View all food orders")
+                print("12. Edit species")
+                print("13. View all tickets")
+                print("14. View all food orders")
                 if user_role == 1:
-                    print("16. Delete user")
-                    print("17. Change user role")
-                    print("18. Users history")
+                    print("15. Delete user")
+                    print("16. Change user role")
+                    print("17. Users history")
             print("0. Logout")
         else:
             print("1. Register")
@@ -502,19 +536,18 @@ def main():
             if user_role in [1, 2]:
                 menu_options_zookeeper = {
                     '11': edit_animal,
-                    #'12': edit_aviary,
-                    #'13': edit_species,
-                    '14': view_all_tickets,
-                    '15': view_all_food_orders
+                    '12': edit_species,
+                    '13': view_all_tickets,
+                    '14': view_all_food_orders
                 }
                 if choice in menu_options_zookeeper:
                     menu_options_zookeeper[choice](user_info[0])
 
                 if user_role == 1:
                     menu_options_admin = {
-                        '16': delete_user_by_id,
-                        '17': change_user_role,
-                        '18': view_action_table
+                        '15': delete_user_by_id,
+                        '16': change_user_role,
+                        '17': view_action_table
                     }
                     if choice in menu_options_admin:
                         menu_options_admin[choice](user_info[0])
